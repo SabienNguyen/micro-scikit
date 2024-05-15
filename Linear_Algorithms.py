@@ -25,8 +25,11 @@ def MutipleLinearRegression(X, y) :
     
     # Calculate slope and intercept using Least Squares
     m = []
+    b = y_bar
     for i in range(len(X)):
         m.append(np.sum((X[i] - X_bar[i]) * (y - y_bar)) / np.sum((X[i] - X_bar[i]) ** 2))
-    b = y_bar - np.dot(m, X_bar)
+    for i in range(len(X)):
+        b -= m[i] * X_bar[i]
+        
     
     return (m, b)
