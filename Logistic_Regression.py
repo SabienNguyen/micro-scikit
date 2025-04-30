@@ -14,7 +14,16 @@ class Logistic_Regression:
     def _sigmoid(self, z):
         return 1 / (1 + np.e ** (-1 * z))
     
-    def train(self):
+    def train(self, alpha):
+        # steps
+        # figure out stopping point (when we hit gradient)
+        # initialize weights and bias
+        # training loop
+        # need to define a loss function to measure performance
+        # take linear combination of training data and weights
+        # predict on all inputs
+        # find loss
+        # adjust weights accordingly
         pass
     
     def compute_linear_combination(self, weights, input, bias):
