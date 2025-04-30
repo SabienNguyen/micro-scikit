@@ -30,3 +30,4 @@ def MutipleLinearRegression(X, y) :
     b = y_bar - np.dot(m, X_bar)
     
     return (m, b)
+
