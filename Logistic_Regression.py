@@ -14,12 +14,17 @@ class Logistic_Regression:
     def _sigmoid(self, z):
         return 1 / (1 + np.e ** (-1 * z))
     
-    def train(self, alpha):
+    def _log_loss(self, y, y_hat):
+        return -1 * (y * np.log(y_hat) + (1-y) * np.log(1 - y_hat))
+    
+    def train(self, X, y, alpha):
         # steps
         # figure out stopping point (when we hit gradient)
         # initialize weights and bias
+        weights = np.zeros(X.shape[1])
+        b = 0
         # training loop
-        # need to define a loss function to measure performance
+        # need to define a loss function to measure performance using log loss
         # take linear combination of training data and weights
         # predict on all inputs
         # find loss
