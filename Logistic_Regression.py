@@ -5,37 +5,47 @@
 # Need to create logistic regression class
 
 import numpy as np
+import pandas as pd
 
 class Logistic_Regression:
     
     def __init__(self):
-        self.weights = 0
-        self.bias = 0
+        self.weights = None
+        self.bias = 0.0
         return
     
     def _sigmoid(self, z):
-        return 1 / (1 + np.e ** (-1 * z))
+        return 1 / (1 + np.exp(-z))
     
     def _log_loss(self, y, y_hat):
-        return -1 * (y * np.log(y_hat) + (1-y) * np.log(1 - y_hat))
+        y_hat = np.clip(y_hat, 1e-9, 1 - 1e-9)
+        return -1 * (y * np.log(y_hat) + (1 - y) * np.log(1 - y_hat))
     
-    def _gradient(self):
-        return
-    
-    def train(self, X, y, alpha):
-        # steps
-        # figure out stopping point (when we hit gradient)
-        # initialize weights and bias
-        # training loop
-        prev_loss = 0
-        while True:
-            self.weights = np.zeros(X.shape[1])
-            loss = 0
-            for i, (_, row) in enumerate(X.iterrows()):
-                y_hat = self.predict(input)
-                loss += self._log_loss(y[i], y_hat)
-            loss /= X.shape[0]
-            if np.abs(loss - prev_loss) < 0.0001 :
+    def train(self, X, y, alpha=0.1, max_iter=10000, tol=1e-4):
+        if isinstance(X, pd.DataFrame):
+            X = X.values
+        n_samples, n_features = X.shape
+        
+        self.weights = np.zeros(n_features)
+        self.bias = 0.0
+        prev_loss = float('inf')
+        
+        for _ in range(max_iter):
+            linear_model = self._compute_linear_combination(X)
+            y_hat = self._sigmoid(linear_model)
+            
+            #gradients
+            error = y_hat - y
+            dw = np.dot(X.T, error) / n_samples
+            db = np.mean(error)
+            
+            #update
+            self.weights -= alpha * dw
+            self.bias -= alpha * db
+            
+            #compute loss
+            loss = np.mean(self._log_loss(y, y_hat))
+            if abs(prev_loss - loss) < tol: 
                 break
             prev_loss = loss
         # need to define a loss function to measure performance using log loss
@@ -46,8 +56,14 @@ class Logistic_Regression:
         return
     
     def _compute_linear_combination(self, input):
-        return np.dot(self.weights, input) + self.bias
+        return np.dot(input, self.weights) + self.bias
+    
+    def predict_proba(self, X):
+        if isinstance(X, pd.DataFrame):
+            X = X.values
+        linear_model = np.dot(X, self.weights) + self.bias
+        return self._sigmoid(linear_model)
     
     def predict(self, input):
-        return 1 if self.sigmoid(self._compute_linear_combination(input)) > 0.5 else 0
+        return (self.predict_proba(input) > 0.5).astype(int)
     
