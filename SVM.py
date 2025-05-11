@@ -14,6 +14,8 @@ def compute_gram_matrix(X):
     return res
 
 def objective_function(gram_mtx, y, lambdas):
+    first_sum = sum(lambdas)
+    double_sum = np.dot()
     
 
 def main():
