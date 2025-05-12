@@ -14,17 +14,67 @@ def compute_gram_matrix(X):
     return res
 
 def objective_function(gram_mtx, y, lambdas):
+    N = len(gram_mtx)
     first_sum = sum(lambdas)
-    double_sum = np.dot()
+    double_sum = 0
     
+    for i in range(N):
+        for j in range(N):
+            double_sum += lambdas[i] * lambdas[j] * y[i] * y[j] * gram_mtx[i][j]
+            
+    return first_sum - (0.5 * double_sum)
+    
+def gradient(gram_mtx, y, lambdas):
+    N = len(gram_mtx)
+    gradients = [0] * N
+    
+    for i in range(N):
+        sum = 0
+        for j in range(N):
+            sum += lambdas[j] * y[i] * y[j] * gram_mtx[i][j]
+        gradients[i] = 1 - sum
+    return gradients
 
+def gradient_ascent(gram_mtx, y, lambdas, eta, iterations, tol=1e-4):
+    print("Starting Gradient Ascent...")
+    prev_obj_value = float('-inf')
+    
+    for i in range(iterations):
+        gradients = gradient(gram_mtx, y, lambdas)
+        for j in range(len(gram_mtx)):
+            lambdas[j] += eta * gradients[j]
+            lambdas[j] = max(0, lambdas[j])
+            
+        sum_lambdas_y = sum(lambdas[i] * y[i] for i in range(len(lambdas)))
+        correction = sum_lambdas_y / len(lambdas)
+        for j in range(len(lambdas)):
+            lambdas[j] -= correction * y[j]
+
+            
+        obj_value = objective_function(gram_mtx, y, lambdas)
+        print(f"Iteration {i + 1}: Objective = {obj_value:.4f}")
+        
+        # Check for convergence (if the objective value has not improved much)
+        if abs(obj_value - prev_obj_value) < tol:
+            print(f"Converged after {i + 1} iterations.")
+            break
+        prev_obj_value = obj_value
+    return lambdas
+        
 def main():
     # Code to be executed when the script is run directly
     X, y = initialize_data()
-    lambdas = [0 * len(X)]
+    lambdas = [0] * len(X)
     gram_mtx = compute_gram_matrix(X)
     for row in gram_mtx:
         print(row)
+        
+    lambdas = [0.5, 0.5, 0.2, 0.2]
+    gradients = gradient(gram_mtx, y, lambdas)
+    print(gradients)
+    
+    final_lambdas = gradient_ascent(gram_mtx, y, lambdas, 0.05, 100)
+    print(final_lambdas)
 
 if __name__ == "__main__":
     main()
