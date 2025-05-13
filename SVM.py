@@ -60,6 +60,22 @@ def gradient_ascent(gram_mtx, y, lambdas, eta, iterations, tol=1e-4):
             break
         prev_obj_value = obj_value
     return lambdas
+
+def calculate_bias(gram_mtx, X, y, lambdas, threshold=1e-6):
+    support_indices = [i for i, l in enumerate(lambdas) if l > threshold]
+    if not support_indices:
+        raise ValueError("No vectors found. check lambdas")
+    
+    b_values = []
+    
+    for i in support_indices:
+        y_i = y[i]
+        sum_term = sum(
+            lambdas[j] * y[j] * np.dot(X[j], X[i]) for j in range(len(lambdas))
+        )
+        b = y_i - sum_term
+        b_values.append(b)
+    return np.mean(b_values)
         
 def main():
     # Code to be executed when the script is run directly
@@ -75,6 +91,8 @@ def main():
     
     final_lambdas = gradient_ascent(gram_mtx, y, lambdas, 0.05, 100)
     print(final_lambdas)
+    b = calculate_bias(gram_mtx, X, y, lambdas)
+    print(f"Calculated bias (b): {b}")
 
 if __name__ == "__main__":
     main()
