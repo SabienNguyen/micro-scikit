@@ -2,3 +2,6 @@ fastapi
 uvicorn
 scikit-learn==1.6.1
 joblib
+dotenv
+prometheus_fastapi_instrumentator
+pydantic
