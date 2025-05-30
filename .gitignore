@@ -2,3 +2,6 @@ __pycache__
 Algorithms/__pycache__
 notebooks/data
 notebooks/results
+data/
+.env
+models/
