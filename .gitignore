@@ -5,3 +5,5 @@ notebooks/results
 data/
 .env
 models/
+zips/
+cartpole_tensorboard/
