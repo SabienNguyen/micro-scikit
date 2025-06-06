@@ -9,9 +9,6 @@ from prometheus_client import Counter, Histogram
 # Load environment variables
 load_dotenv()
 
-
-
-
 model_path = "models/model.pkl"
 vectorizer_path = "models/vectorizer.pkl"
 
